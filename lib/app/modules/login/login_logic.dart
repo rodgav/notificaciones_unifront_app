@@ -35,9 +35,13 @@ class LoginLogic extends GetxController {
       if (typeUser == 'Apoderado') {
         final tokenModel = await _dbRepository.loginApoderado(
             correo: correoCtrl.text.trim(), password: passwordCtrl.text.trim());
-        if (tokenModel != null && tokenModel.jwt != null) {
-          await AuthService.to.saveSession(tokenModel, 'Apoderado');
-          Get.rootDelegate.toNamed(Routes.home);
+        if (tokenModel != null) {
+          if (tokenModel.jwt != null) {
+            await AuthService.to.saveSession(tokenModel, 'Apoderado');
+            Get.rootDelegate.toNamed(Routes.home);
+          } else {
+            DialogService.to.snackBar(Colors.red, 'Error', tokenModel.message);
+          }
         } else {
           DialogService.to.snackBar(
               Colors.red, 'Error', 'Usuario y contraseña incorrectos');
@@ -45,9 +49,13 @@ class LoginLogic extends GetxController {
       } else {
         final tokenModel = await _dbRepository.loginEstudiante(
             correo: correoCtrl.text.trim(), password: passwordCtrl.text.trim());
-        if (tokenModel != null && tokenModel.jwt != null) {
-          await AuthService.to.saveSession(tokenModel, 'Estudiante');
-          Get.rootDelegate.toNamed(Routes.home);
+        if (tokenModel != null) {
+          if (tokenModel.jwt != null) {
+            await AuthService.to.saveSession(tokenModel, 'Estudiante');
+            Get.rootDelegate.toNamed(Routes.home);
+          } else {
+            DialogService.to.snackBar(Colors.red, 'Error', tokenModel.message);
+          }
         } else {
           DialogService.to.snackBar(
               Colors.red, 'Error', 'Usuario y contraseña incorrectos');
