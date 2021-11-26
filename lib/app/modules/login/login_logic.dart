@@ -17,8 +17,8 @@ class LoginLogic extends GetxController {
 
   @override
   void onReady() {
-    correoCtrl.text ='katia@gmail.com';
-    passwordCtrl.text ='12345678';
+    //correoCtrl.text ='katia@gmail.com';
+    //passwordCtrl.text ='12345678';
     // correoCtrl.text ='rodo@gmail.com';
     //passwordCtrl.text ='rodo';
     //correoCtrl.text ='sinapoderado@gmail.com';
