@@ -16,7 +16,7 @@ class HomeLogic extends GetxController {
   @override
   void onReady() {
     if (AuthService.to.role == 'Apoderado') {
-      _getStudents();
+      onChangeStudent(null);
     } else {
       StudentService.to.estudianteSet = AuthService.to.sub ?? '0';
       Get.rootDelegate.toNamed(Routes.nextPending);
@@ -24,24 +24,19 @@ class HomeLogic extends GetxController {
     super.onReady();
   }
 
-  void _getStudents() async {
+
+  void onChangeStudent(String? currentLocation) async{
     final token = await AuthService.to.getToken();
     if (token != null) {
       _estudianteModel =
           await _dbRepository.getEstudiantesForApoderado(token: token);
-    } else {
-      Get.rootDelegate.toNamed(Routes.login);
-    }
-  }
-
-  void onChangeStudent(Size size, String? currentLocation) {
       if (_estudianteModel != null) {
         Get.dialog(Scaffold(
           backgroundColor: Colors.transparent,
           body: Center(
             child: Container(
-              width: size.width * 0.8,
-              height: size.height * 0.38,
+              width: 300,
+              height: 250,
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                   color: Colors.white, borderRadius: BorderRadius.circular(12)),
@@ -70,45 +65,43 @@ class HomeLogic extends GetxController {
                   Expanded(
                     child: _estudianteModel!.estudiantes.isNotEmpty
                         ? ListView.separated(
-                            physics: const BouncingScrollPhysics(),
-                            itemBuilder: (__, index) {
-                              final student =
-                                  _estudianteModel!.estudiantes[index];
-                              return ListTile(
-                                leading: CircleAvatar(
-                                  backgroundColor: const Color(0xff1E4280),
-                                  child: Text(student.name.substring(0, 2)),
-                                ),
-                                title: Text(
-                                  student.name,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                onTap: () {
-                                  StudentService.to.estudianteSet =
-                                      student.id.toString();
-                                  if (currentLocation != null) {
-                                    if (currentLocation == '/home/inbox' ||
-                                        currentLocation == '/') {
-                                      Get.rootDelegate
-                                          .toNamed(Routes.nextPending);
-                                    } else {
-                                      Get.rootDelegate.toNamed(Routes.inbox);
-                                    }
-                                  }
-                                  _closeDialog();
-                                },
-                              );
+                        physics: const BouncingScrollPhysics(),
+                        itemBuilder: (__, index) {
+                          final student =
+                          _estudianteModel!.estudiantes[index];
+                          return ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: const Color(0xff1E4280),
+                              child: Text(student.name.substring(0, 2)),
+                            ),
+                            title: Text(
+                              '${student.name} ${student.lastname}',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            onTap: () {
+                              StudentService.to.estudianteSet =
+                                  student.id.toString();
+                              if (currentLocation ==null || currentLocation == '/home/inbox' ||
+                                  currentLocation == '/') {
+                                Get.rootDelegate
+                                    .toNamed(Routes.nextPending);
+                              } else {
+                                Get.rootDelegate.toNamed(Routes.inbox);
+                              }
+                              _closeDialog();
                             },
-                            separatorBuilder: (__, index) => const Divider(),
-                            itemCount: _estudianteModel!.estudiantes.length)
+                          );
+                        },
+                        separatorBuilder: (__, index) => const Divider(),
+                        itemCount: _estudianteModel!.estudiantes.length)
                         : const Center(
-                            child: Text('No hay estudiantes'),
-                          ),
+                      child: Text('No hay estudiantes'),
+                    ),
                   ),
                   const SizedBox(height: 10),
                   SizedBox(
-                    width: size.width * 0.75,
+                    width: 300,
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             primary: const Color(0xff1E4280),
@@ -132,6 +125,10 @@ class HomeLogic extends GetxController {
         DialogService.to.snackBar(
             Colors.red, 'ERROR', 'Usted no tiene estudiantes añadidos');
       }
+    } else {
+      Get.rootDelegate.toNamed(Routes.login);
+    }
+
   }
 
   void _closeDialog() {
@@ -141,7 +138,8 @@ class HomeLogic extends GetxController {
   void _logOut() async {
     final logOut = await AuthService.to.eraseSession();
     if (logOut) {
-      Get.rootDelegate.toNamed(Routes.login);
+      Get.rootDelegate.offNamed(Routes.login);
+      Get.back();
     } else {
       DialogService.to.snackBar(
           Colors.red, 'ERROR', 'No se pudo cerrar sesión, intentelo mas tarde');

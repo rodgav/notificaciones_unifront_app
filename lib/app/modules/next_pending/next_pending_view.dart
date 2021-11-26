@@ -11,6 +11,7 @@ class NextPendingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       body: GetBuilder<NextPendingLogic>(
           id: 'notificaciones',
@@ -25,27 +26,33 @@ class NextPendingPage extends StatelessWidget {
                         itemBuilder: (__, index) {
                           final notificacion =
                               notificacionModel.notificaciones[index];
-                          final day = DateFormat('d', 'es_ES')
-                              .format(notificacion.dateLimit);
-                          final mmm = DateFormat('MMM', 'es_ES')
+                          final day = DateFormat('yMd', 'es_ES')
                               .format(notificacion.dateLimit);
                           return ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: const Color(0xff1E4280),
-                              child: RichText(
-                                  text: TextSpan(children: [
-                                TextSpan(
-                                    text: '$day\n',
-                                    style: const TextStyle(fontSize: 16)),
-                                TextSpan(
-                                    text: mmm,
-                                    style: const TextStyle(fontSize: 12))
-                              ])),
+                            leading: const CircleAvatar(
+                              backgroundColor: Color(0xff1E4280),
+                              child: Icon(
+                                Icons.notifications,
+                                color: Colors.white,
+                              ),
                             ),
-                            title: Text(
-                              notificacion.titulo,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width: size.width * 0.5,
+                                  child: Text(notificacion.titulo,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis),
+                                ),
+                                Text(day,
+                                    style: const TextStyle(
+                                        color: Colors.grey, fontSize: 12),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis)
+                              ],
                             ),
                             subtitle: Text(
                               notificacion.mensaje,

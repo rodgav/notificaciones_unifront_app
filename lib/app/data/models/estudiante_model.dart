@@ -43,7 +43,6 @@ class Estudiante {
     required this.name,
     required this.lastname,
     required this.correo,
-    required this.password,
     required this.idSubNivel,
     required this.createdAt,
     required this.updatedAt,
@@ -54,7 +53,6 @@ class Estudiante {
   String name;
   String lastname;
   String correo;
-  String password;
   int idSubNivel;
   DateTime createdAt;
   DateTime updatedAt;
@@ -65,7 +63,6 @@ class Estudiante {
     name: json["name"],
     lastname: json["lastname"],
     correo: json["correo"],
-    password: json["password"],
     idSubNivel: json["idSubNivel"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
@@ -77,7 +74,6 @@ class Estudiante {
     "name": name,
     "lastname": lastname,
     "correo": correo,
-    "password": password,
     "idSubNivel": idSubNivel,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),

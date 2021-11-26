@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:jwt_decode/jwt_decode.dart';
@@ -11,8 +12,10 @@ class AuthService extends GetxService {
   final _getStorage = GetStorage();
 
   String? get jwt => _getStorage.read('jwt');
+
   String? get role => _getStorage.read('role');
-  String? get sub => _getStorage.read('sub');
+
+  String? get sub => _getStorage.read('sub').toString();
 
   Future<void> saveSession(TokenModel tokenModel, String role) async {
     Map<String, dynamic> payload = Jwt.parseJwt(tokenModel.jwt!);
@@ -30,13 +33,20 @@ class AuthService extends GetxService {
             .toString());
   }
 
-  Future<bool> eraseSession() async {
+  Future<bool> eraseSession({bool server = true}) async {
     final token = await _getStorage.read('jwt') ?? '';
-    final logOut = await _dbRepository.logOut(token: token);
-    if (logOut) {
+    if (server) {
+      final logOut = await _dbRepository.logOut(token: token);
+      if (logOut) {
+        await _getStorage.erase();
+        return true;
+      }else{
+        return false;
+      }
+    } else {
       await _getStorage.erase();
+      return true;
     }
-    return logOut;
   }
 
   Future<String?> getToken() async {
@@ -50,8 +60,11 @@ class AuthService extends GetxService {
       }
       final tokenModel = await _dbRepository.refresh(token: token);
       if (tokenModel != null && tokenModel.jwt != null) {
+        debugPrint('ingreso aqui');
         await saveSession(tokenModel, role);
         return tokenModel.jwt;
+      } else {
+        await eraseSession();
       }
       return null;
     } else {

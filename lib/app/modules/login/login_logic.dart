@@ -14,6 +14,19 @@ class LoginLogic extends GetxController {
 
   String? get typeUser => _typeUser;
 
+
+  @override
+  void onReady() {
+    correoCtrl.text ='katia@gmail.com';
+    passwordCtrl.text ='12345678';
+    // correoCtrl.text ='rodo@gmail.com';
+    //passwordCtrl.text ='rodo';
+    //correoCtrl.text ='sinapoderado@gmail.com';
+    //passwordCtrl.text ='sinapoderado';
+    super.onReady();
+  }
+
+
   String? validateEmail(String? value) {
     Pattern pattern =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';

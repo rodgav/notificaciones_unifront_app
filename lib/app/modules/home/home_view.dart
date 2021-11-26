@@ -39,7 +39,7 @@ class HomePage extends StatelessWidget {
                         color: Color(0xff1E4280),
                       ),
                     ),
-                    onTap: () => logic.onChangeStudent(size, currentLocation),
+                    onTap: () => logic.onChangeStudent(currentLocation),
                   )
                 : const SizedBox()
           ],

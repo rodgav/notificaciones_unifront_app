@@ -4,6 +4,7 @@ import 'package:notificaciones_unifront_app/app/core/utils/helpers/http/http.dar
 import 'package:notificaciones_unifront_app/app/data/models/estudiante_model.dart';
 import 'package:notificaciones_unifront_app/app/data/models/notificaciones_model.dart';
 import 'package:notificaciones_unifront_app/app/data/models/token_model.dart.dart';
+import 'package:notificaciones_unifront_app/app/data/services/dialog_service.dart';
 
 class DbProvider {
   final Http _http;
@@ -37,7 +38,10 @@ class DbProvider {
   Future<TokenModel?> refresh({required String token}) async {
     try {
       final result = await _http.request('refresh',
-          method: HttpMethod.post, headers: {'Authorization': token});
+          method: HttpMethod.post, headers: {'Authorization': token});if (result.data['code'] == 401) {
+        DialogService.to.closeSession();
+        return null;
+      }
       return TokenModel.fromJson(result.data);
     } catch (_) {
       return null;
@@ -64,8 +68,13 @@ class DbProvider {
     try {
       final result = await _http.request('estudiantesForApoderado',
           method: HttpMethod.get, headers: {'Authorization': token});
+      if (result.data['code'] == 401) {
+        DialogService.to.closeSession();
+        return null;
+      }
       return EstudianteModel.fromJson(result.data);
     } catch (_) {
+      print(_);
       return null;
     }
   }
@@ -76,7 +85,10 @@ class DbProvider {
       final result = await _http.request('notificaciones',
           method: HttpMethod.get,
           headers: {'Authorization': token},
-          queryParameters: {'idEstudiante': idEstudiante});
+          queryParameters: {'idEstudiante': idEstudiante});if (result.data['code'] == 401) {
+        DialogService.to.closeSession();
+        return null;
+      }
       return NotificacionModel.fromJson(result.data);
     } catch (_) {
       return null;
@@ -90,6 +102,10 @@ class DbProvider {
           method: HttpMethod.get,
           headers: {'Authorization': token},
           queryParameters: {'idEstudiante': idEstudiante});
+      if (result.data['code'] == 401) {
+        DialogService.to.closeSession();
+        return null;
+      }
       return NotificacionModel.fromJson(result.data);
     } catch (_) {
       return null;
