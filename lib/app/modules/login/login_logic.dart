@@ -46,10 +46,12 @@ class LoginLogic extends GetxController {
     if (formKey.currentState!.validate()) {
       final token = await FcmService().getToken();
       if (typeUser == 'Apoderado') {
+        DialogService.to.openDialog();
         final tokenModel = await _dbRepository.loginApoderado(
             correo: correoCtrl.text.trim(),
             password: passwordCtrl.text.trim(),
             token: token.toString());
+        DialogService.to.closeDialog();
         if (tokenModel != null) {
           if (tokenModel.jwt != null) {
             await AuthService.to.saveSession(tokenModel, 'Apoderado');
@@ -62,10 +64,12 @@ class LoginLogic extends GetxController {
               Colors.red, 'Error', 'Usuario y contraseña incorrectos');
         }
       } else {
+        DialogService.to.openDialog();
         final tokenModel = await _dbRepository.loginEstudiante(
             correo: correoCtrl.text.trim(),
             password: passwordCtrl.text.trim(),
             token: token.toString());
+        DialogService.to.closeDialog();
         if (tokenModel != null) {
           if (tokenModel.jwt != null) {
             await AuthService.to.saveSession(tokenModel, 'Estudiante');
