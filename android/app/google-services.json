@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "777434892542",
+    "project_id": "notificaciones-unifront",
+    "storage_bucket": "notificaciones-unifront.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777434892542:android:e857b89e8124719a02fdaf",
+        "android_client_info": {
+          "package_name": "com.example.notificaciones_unifront_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "777434892542-frp1491og4hse1miojlva2pshesmo5b2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAb25l_7jFWfScpLX3o13kTa3jkbWVkqP8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "777434892542-frp1491og4hse1miojlva2pshesmo5b2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

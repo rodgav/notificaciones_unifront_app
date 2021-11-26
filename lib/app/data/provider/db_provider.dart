@@ -12,9 +12,11 @@ class DbProvider {
   DbProvider(this._http);
 
   Future<TokenModel?> loginApoderado(
-      {required String correo, required String password}) async {
+      {required String correo,
+      required String password,
+      required String token}) async {
     try {
-      final json = {'correo': correo, 'password': password};
+      final json = {'correo': correo, 'password': password, 'token': token};
       final result = await _http.request('loginApoderado',
           method: HttpMethod.post, body: {'json': jsonEncode(json)});
       return TokenModel.fromJson(result.data);
@@ -24,9 +26,11 @@ class DbProvider {
   }
 
   Future<TokenModel?> loginEstudiante(
-      {required String correo, required String password}) async {
+      {required String correo,
+      required String password,
+      required String token}) async {
     try {
-      final json = {'correo': correo, 'password': password};
+      final json = {'correo': correo, 'password': password, 'token': token};
       final result = await _http.request('loginEstudiante',
           method: HttpMethod.post, body: {'json': jsonEncode(json)});
       return TokenModel.fromJson(result.data);
@@ -38,7 +42,8 @@ class DbProvider {
   Future<TokenModel?> refresh({required String token}) async {
     try {
       final result = await _http.request('refresh',
-          method: HttpMethod.post, headers: {'Authorization': token});if (result.data['code'] == 401) {
+          method: HttpMethod.post, headers: {'Authorization': token});
+      if (result.data['code'] == 401) {
         DialogService.to.closeSession();
         return null;
       }
@@ -63,6 +68,21 @@ class DbProvider {
     }
   }
 
+  Future<Estudiante?> getEstudiante(
+      {required String token}) async {
+    try {
+      final result = await _http.request('estudiante',
+          method: HttpMethod.get, headers: {'Authorization': token});
+      if (result.data['code'] == 401) {
+        DialogService.to.closeSession();
+        return null;
+      }
+      return Estudiante.fromJson(result.data['estudiante']);
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<EstudianteModel?> getEstudiantesForApoderado(
       {required String token}) async {
     try {
@@ -74,7 +94,6 @@ class DbProvider {
       }
       return EstudianteModel.fromJson(result.data);
     } catch (_) {
-      print(_);
       return null;
     }
   }
@@ -85,7 +104,8 @@ class DbProvider {
       final result = await _http.request('notificaciones',
           method: HttpMethod.get,
           headers: {'Authorization': token},
-          queryParameters: {'idEstudiante': idEstudiante});if (result.data['code'] == 401) {
+          queryParameters: {'idEstudiante': idEstudiante});
+      if (result.data['code'] == 401) {
         DialogService.to.closeSession();
         return null;
       }

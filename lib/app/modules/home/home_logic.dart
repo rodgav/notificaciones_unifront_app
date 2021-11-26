@@ -11,7 +11,6 @@ import 'package:notificaciones_unifront_app/app/routes/app_pages.dart';
 
 class HomeLogic extends GetxController {
   final _dbRepository = Get.find<DbRepository>();
-  EstudianteModel? _estudianteModel;
 
   @override
   void onReady() {
@@ -24,19 +23,19 @@ class HomeLogic extends GetxController {
     super.onReady();
   }
 
-
-  void onChangeStudent(String? currentLocation) async{
+  void onChangeStudent(String? currentLocation) async {
     final token = await AuthService.to.getToken();
     if (token != null) {
-      _estudianteModel =
+      EstudianteModel? _estudianteModel =
           await _dbRepository.getEstudiantesForApoderado(token: token);
+      Estudiante? _estudiante = await _dbRepository.getEstudiante(token: token);
       if (_estudianteModel != null) {
         Get.dialog(Scaffold(
           backgroundColor: Colors.transparent,
           body: Center(
             child: Container(
               width: 300,
-              height: 250,
+              height: 350,
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                   color: Colors.white, borderRadius: BorderRadius.circular(12)),
@@ -54,50 +53,65 @@ class HomeLogic extends GetxController {
                       onTap: _closeDialog,
                     ),
                   ),
-                  const Text(
-                    'Cambiar de estudiante',
-                    style: TextStyle(
+                  Text(
+                    _estudianteModel.estudiantes.isNotEmpty
+                        ? 'Cambiar de estudiante'
+                        : 'Estudiante',
+                    style: const TextStyle(
                         color: Colors.black,
                         fontSize: 19,
                         fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
                   Expanded(
-                    child: _estudianteModel!.estudiantes.isNotEmpty
+                    child: _estudianteModel.estudiantes.isNotEmpty
                         ? ListView.separated(
-                        physics: const BouncingScrollPhysics(),
-                        itemBuilder: (__, index) {
-                          final student =
-                          _estudianteModel!.estudiantes[index];
-                          return ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: const Color(0xff1E4280),
-                              child: Text(student.name.substring(0, 2)),
-                            ),
-                            title: Text(
-                              '${student.name} ${student.lastname}',
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            onTap: () {
-                              StudentService.to.estudianteSet =
-                                  student.id.toString();
-                              if (currentLocation ==null || currentLocation == '/home/inbox' ||
-                                  currentLocation == '/') {
-                                Get.rootDelegate
-                                    .toNamed(Routes.nextPending);
-                              } else {
-                                Get.rootDelegate.toNamed(Routes.inbox);
-                              }
-                              _closeDialog();
+                            physics: const BouncingScrollPhysics(),
+                            itemBuilder: (__, index) {
+                              final student =
+                                  _estudianteModel.estudiantes[index];
+                              return ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: const Color(0xff1E4280),
+                                  child: Text(student.name.substring(0, 2)),
+                                ),
+                                title: Text(
+                                  '${student.name} ${student.lastname}',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                onTap: () {
+                                  StudentService.to.estudianteSet =
+                                      student.id.toString();
+                                  if (currentLocation == null ||
+                                      currentLocation == '/home/inbox' ||
+                                      currentLocation == '/') {
+                                    Get.rootDelegate
+                                        .toNamed(Routes.nextPending);
+                                  } else {
+                                    Get.rootDelegate.toNamed(Routes.inbox);
+                                  }
+                                  _closeDialog();
+                                },
+                              );
                             },
-                          );
-                        },
-                        separatorBuilder: (__, index) => const Divider(),
-                        itemCount: _estudianteModel!.estudiantes.length)
-                        : const Center(
-                      child: Text('No hay estudiantes'),
-                    ),
+                            separatorBuilder: (__, index) => const Divider(),
+                            itemCount: _estudianteModel.estudiantes.length)
+                        : _estudiante != null
+                            ? ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: const Color(0xff1E4280),
+                                  child: Text(_estudiante.name.substring(0, 2)),
+                                ),
+                                title: Text(
+                                  '${_estudiante.name} ${_estudiante.lastname}',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              )
+                            : const Center(
+                                child: Text('Sin datos'),
+                              ),
                   ),
                   const SizedBox(height: 10),
                   SizedBox(
@@ -111,9 +125,11 @@ class HomeLogic extends GetxController {
                         child: const Text('Cerrar sesión')),
                   ),
                   const SizedBox(height: 10),
-                  const Text(
-                    'Estos son los estudiantes vinculados a su cuenta.',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                  Text(
+                    _estudianteModel.estudiantes.isNotEmpty
+                        ? 'Estos son los estudiantes vinculados a su cuenta.'
+                        : 'Esta es tu cuenta de estudiante',
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                   const SizedBox(height: 10),
                 ],
@@ -122,13 +138,12 @@ class HomeLogic extends GetxController {
           ),
         ));
       } else {
-        DialogService.to.snackBar(
-            Colors.red, 'ERROR', 'Usted no tiene estudiantes añadidos');
+        DialogService.to
+            .snackBar(Colors.red, 'Error', 'No se encontro el estudiante');
       }
     } else {
       Get.rootDelegate.toNamed(Routes.login);
     }
-
   }
 
   void _closeDialog() {

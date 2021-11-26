@@ -6,9 +6,10 @@ import 'package:notificaciones_unifront_app/app/data/models/token_model.dart.dar
 import 'package:notificaciones_unifront_app/app/data/repositorys/db_repository.dart';
 
 class AuthService extends GetxService {
-  final _dbRepository = Get.find<DbRepository>();
 
   static AuthService get to => Get.find();
+
+  final _dbRepository = Get.find<DbRepository>();
   final _getStorage = GetStorage();
 
   String? get jwt => _getStorage.read('jwt');

@@ -8,12 +8,18 @@ class DbRepository {
   final _dbProvider = Get.find<DbProvider>();
 
   Future<TokenModel?> loginApoderado(
-          {required String correo, required String password}) =>
-      _dbProvider.loginApoderado(correo: correo, password: password);
+          {required String correo,
+          required String password,
+          required String token}) =>
+      _dbProvider.loginApoderado(
+          correo: correo, password: password, token: token);
 
   Future<TokenModel?> loginEstudiante(
-          {required String correo, required String password}) =>
-      _dbProvider.loginEstudiante(correo: correo, password: password);
+          {required String correo,
+          required String password,
+          required String token}) =>
+      _dbProvider.loginEstudiante(
+          correo: correo, password: password, token: token);
 
   Future<TokenModel?> refresh({required String token}) =>
       _dbProvider.refresh(token: token);
@@ -24,6 +30,9 @@ class DbRepository {
   Future<EstudianteModel?> getEstudiantesForApoderado(
           {required String token}) =>
       _dbProvider.getEstudiantesForApoderado(token: token);
+
+  Future<Estudiante?> getEstudiante({required String token}) =>
+      _dbProvider.getEstudiante(token: token);
 
   Future<NotificacionModel?> getNotificaciones(
           {required String token, required String idEstudiante}) =>

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:notificaciones_unifront_app/app/data/repositorys/db_repository.dart';
 import 'package:notificaciones_unifront_app/app/data/services/auth_service.dart';
 import 'package:notificaciones_unifront_app/app/data/services/dialog_service.dart';
+import 'package:notificaciones_unifront_app/app/data/services/fcm_service.dart';
 import 'package:notificaciones_unifront_app/app/routes/app_pages.dart';
 
 class LoginLogic extends GetxController {
@@ -14,8 +15,7 @@ class LoginLogic extends GetxController {
 
   String? get typeUser => _typeUser;
 
-
-  @override
+  /*@override
   void onReady() {
     //correoCtrl.text ='katia@gmail.com';
     //passwordCtrl.text ='12345678';
@@ -24,8 +24,7 @@ class LoginLogic extends GetxController {
     //correoCtrl.text ='sinapoderado@gmail.com';
     //passwordCtrl.text ='sinapoderado';
     super.onReady();
-  }
-
+  }*/
 
   String? validateEmail(String? value) {
     Pattern pattern =
@@ -45,9 +44,12 @@ class LoginLogic extends GetxController {
 
   void login() async {
     if (formKey.currentState!.validate()) {
+      final token = await FcmService().getToken();
       if (typeUser == 'Apoderado') {
         final tokenModel = await _dbRepository.loginApoderado(
-            correo: correoCtrl.text.trim(), password: passwordCtrl.text.trim());
+            correo: correoCtrl.text.trim(),
+            password: passwordCtrl.text.trim(),
+            token: token.toString());
         if (tokenModel != null) {
           if (tokenModel.jwt != null) {
             await AuthService.to.saveSession(tokenModel, 'Apoderado');
@@ -61,7 +63,9 @@ class LoginLogic extends GetxController {
         }
       } else {
         final tokenModel = await _dbRepository.loginEstudiante(
-            correo: correoCtrl.text.trim(), password: passwordCtrl.text.trim());
+            correo: correoCtrl.text.trim(),
+            password: passwordCtrl.text.trim(),
+            token: token.toString());
         if (tokenModel != null) {
           if (tokenModel.jwt != null) {
             await AuthService.to.saveSession(tokenModel, 'Estudiante');

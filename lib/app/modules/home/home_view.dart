@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:notificaciones_unifront_app/app/data/services/auth_service.dart';
 import 'package:notificaciones_unifront_app/app/routes/app_pages.dart';
 
 import 'home_logic.dart';
@@ -12,7 +11,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return GetRouterOutlet.builder(builder: (context, delegate, current) {
       /*debugPrint('student ${ StudentService.to.estudiante}');*/
       final currentLocation = current?.location;
@@ -30,8 +28,7 @@ class HomePage extends StatelessWidget {
                 color: Colors.black, fontWeight: FontWeight.bold),
           ),
           actions: [
-            AuthService.to.role == 'Apoderado'
-                ? GestureDetector(
+            GestureDetector(
                     child: const CircleAvatar(
                       backgroundColor: Color(0xffC4C4C4),
                       child: Icon(
@@ -41,7 +38,6 @@ class HomePage extends StatelessWidget {
                     ),
                     onTap: () => logic.onChangeStudent(currentLocation),
                   )
-                : const SizedBox()
           ],
         ),
         body: GetRouterOutlet(
