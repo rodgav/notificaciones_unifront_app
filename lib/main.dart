@@ -14,7 +14,6 @@ import 'package:notificaciones_unifront_app/app/routes/app_pages.dart';
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   final title = message.notification?.title;
   final body = message.notification?.body;
-  await NotificationService().showNotifications(title ?? '', body ?? '');
 }
 
 void main() async {

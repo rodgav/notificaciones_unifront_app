@@ -1,4 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:notificaciones_unifront_app/app/data/services/local_not_service.dart';
 
 class FcmService {
@@ -14,12 +15,14 @@ class FcmService {
     FirebaseMessaging.onMessage.listen((event) {
       final title = event.notification?.title;
       final body = event.notification?.body;
+      //debugPrint('onMessage $title $body');
       NotificationService().showNotifications(title ?? '', body ?? '');
     });
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
       final title = event.notification?.title;
       final body = event.notification?.body;
-      NotificationService().showNotifications(title ?? '', body ?? '');
+      //debugPrint('onMessageOpenedApp $title $body');
+      //NotificationService().showNotifications(title ?? '', body ?? '');
     });
   }
 
