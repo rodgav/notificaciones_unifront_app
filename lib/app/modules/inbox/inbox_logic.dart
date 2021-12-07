@@ -23,9 +23,8 @@ class InboxLogic extends GetxController {
     if (token != null) {
       _notificacionModel = await _dbRepository.getNotificaciones(
           token: token,
-          idEstudiante: StudentService.to.estudiante != null
-              ? StudentService.to.estudiante!
-              : '0');
+          idEstudiante: StudentService.to.estudiante.id.toString()
+              );
     } else {
       Get.rootDelegate.toNamed(Routes.login);
     }

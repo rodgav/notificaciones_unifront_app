@@ -1,6 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:notificaciones_unifront_app/app/data/services/auth_service.dart';
 import 'package:notificaciones_unifront_app/app/data/services/student_service.dart';
 import 'package:notificaciones_unifront_app/app/routes/app_pages.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -86,10 +85,6 @@ class NotificationService {
 }
 
 Future selectNotification(String? payload) async {
-  if (AuthService.to.role == 'Apoderado') {
-   StudentService.to.estudianteSet = '0';
-  } else {
-    StudentService.to.estudianteSet = AuthService.to.sub ?? '0';
-  }
+  StudentService.to.estudianteSet = null;
   Get.rootDelegate.toNamed(Routes.home);
 }

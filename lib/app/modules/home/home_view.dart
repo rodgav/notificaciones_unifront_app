@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:notificaciones_unifront_app/app/data/services/student_service.dart';
 import 'package:notificaciones_unifront_app/app/routes/app_pages.dart';
 
 import 'home_logic.dart';
@@ -28,16 +29,23 @@ class HomePage extends StatelessWidget {
                 color: Colors.black, fontWeight: FontWeight.bold),
           ),
           actions: [
-            GestureDetector(
-                    child: const CircleAvatar(
-                      backgroundColor: Color(0xffC4C4C4),
-                      child: Icon(
-                        Icons.person,
-                        color: Color(0xff1E4280),
-                      ),
-                    ),
-                    onTap: () => logic.onChangeStudent(currentLocation),
-                  )
+            Obx(() {
+              final student = StudentService.to.estudiante;
+              return GestureDetector(
+                child: CircleAvatar(
+                    backgroundColor: const Color(0xffC4C4C4),
+                    child: student.name.isNotEmpty
+                        ? CircleAvatar(
+                            backgroundColor: const Color(0xff1E4280),
+                            child: Text(student.name.substring(0, 2)),
+                          )
+                        : const Icon(
+                            Icons.person,
+                            color: Color(0xff1E4280),
+                          )),
+                onTap: () => logic.onChangeStudent(currentLocation, student.id),
+              );
+            }),
           ],
         ),
         body: GetRouterOutlet(

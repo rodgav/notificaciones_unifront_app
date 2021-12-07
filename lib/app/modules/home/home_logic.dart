@@ -15,15 +15,23 @@ class HomeLogic extends GetxController {
   @override
   void onReady() {
     if (AuthService.to.role == 'Apoderado') {
-      onChangeStudent(null);
+      onChangeStudent(null, 0);
     } else {
-      StudentService.to.estudianteSet = AuthService.to.sub ?? '0';
+      StudentService.to.estudianteSet = Estudiante(
+          id: int.parse(AuthService.to.sub ?? '0'),
+          idapoderado: 0,
+          name: '',
+          lastname: '',
+          correo: '',
+          idSubNivel: 0,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now());
       Get.rootDelegate.toNamed(Routes.nextPending);
     }
     super.onReady();
   }
 
-  void onChangeStudent(String? currentLocation) async {
+  void onChangeStudent(String? currentLocation, int idStudent) async {
     final token = await AuthService.to.getToken();
     if (token != null) {
       EstudianteModel? _estudianteModel =
@@ -70,29 +78,33 @@ class HomeLogic extends GetxController {
                             itemBuilder: (__, index) {
                               final student =
                                   _estudianteModel.estudiantes[index];
-                              return ListTile(
-                                leading: CircleAvatar(
-                                  backgroundColor: const Color(0xff1E4280),
-                                  child: Text(student.name.substring(0, 2)),
+                              return Container(
+                                decoration: BoxDecoration(color: idStudent ==
+                                    student.id ?Colors.grey.shade200:Colors.white,
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: ListTile(
+                                  leading: CircleAvatar(
+                                    backgroundColor: const Color(0xff1E4280),
+                                    child: Text(student.name.substring(0, 2)),
+                                  ),
+                                  title: Text(
+                                    '${student.name} ${student.lastname}',
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  onTap: () {
+                                    StudentService.to.estudianteSet = student;
+                                    if (currentLocation == null ||
+                                        currentLocation == '/home/inbox' ||
+                                        currentLocation == '/') {
+                                      Get.rootDelegate
+                                          .toNamed(Routes.nextPending);
+                                    } else {
+                                      Get.rootDelegate.toNamed(Routes.inbox);
+                                    }
+                                    _closeDialog();
+                                  },
                                 ),
-                                title: Text(
-                                  '${student.name} ${student.lastname}',
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                onTap: () {
-                                  StudentService.to.estudianteSet =
-                                      student.id.toString();
-                                  if (currentLocation == null ||
-                                      currentLocation == '/home/inbox' ||
-                                      currentLocation == '/') {
-                                    Get.rootDelegate
-                                        .toNamed(Routes.nextPending);
-                                  } else {
-                                    Get.rootDelegate.toNamed(Routes.inbox);
-                                  }
-                                  _closeDialog();
-                                },
                               );
                             },
                             separatorBuilder: (__, index) => const Divider(),

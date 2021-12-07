@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:jwt_decode/jwt_decode.dart';
@@ -61,7 +60,6 @@ class AuthService extends GetxService {
       }
       final tokenModel = await _dbRepository.refresh(token: token);
       if (tokenModel != null && tokenModel.jwt != null) {
-        debugPrint('ingreso aqui');
         await saveSession(tokenModel, role);
         return tokenModel.jwt;
       } else {
